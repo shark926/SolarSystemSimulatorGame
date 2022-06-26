@@ -33,7 +33,7 @@ public class Planet : MonoBehaviour
 	void Update ()
 	{
 		if (GetComponent<Rigidbody> () != null)
-			gameObject.GetComponent<Rigidbody> ().mass = Scales.massScale * po.Par [7];
+			gameObject.GetComponent<Rigidbody> ().mass = po.Mass;
 
 		planetCameraDistance = (Camera.main.transform.position - transform.position).magnitude;
 		//sphereCollider

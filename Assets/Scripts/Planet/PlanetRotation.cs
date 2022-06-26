@@ -8,7 +8,7 @@ public class PlanetRotation : MonoBehaviour
 	void Start ()
 	{
 		PO = transform.parent.gameObject.GetComponent<PlanetaryOrbit>();
-		transform.rotation = Quaternion.Euler(PO.Par[4], 0, 0);
+		transform.rotation = Quaternion.Euler(PO.Par.axialTilt, 0, 0);
 	}
 	
 

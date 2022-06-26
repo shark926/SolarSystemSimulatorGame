@@ -73,7 +73,7 @@ public class AuxOrbit : MonoBehaviour
 
 		if (line.enabled) {
 			float t = 0;
-			float deltaTime = Mathf.Floor (POPlanet.Par [1] / 90);
+			float deltaTime = Mathf.Floor (POPlanet.Par.rPericenter / 90);
 			Vector3 velocity = poEarth.ParametricVelocity ();
             
 			velocity += Speed * (Quaternion.Euler (0, Direction, 0) * velocity).normalized;

@@ -3,12 +3,55 @@ using System.Collections;
 
 public class PlanetaryOrbit : MonoBehaviour
 {
-	public float[] Par { get; set; } 		//eccentricity , r_pericenter,  orbital period,  radius, axial tilt, rot pediod longtitude of ascending node
+    /// <summary>
+    /// eccentricity, r_pericenter, orbital period, radius, axial tilt, rot period, longtitude of ascending node, mass
+    /// </summary>
+    public class Parameter
+    {
+        public Parameter(float[] p)
+        {
+            eccentricity                = p[0];
+            rPericenter                 = p[1];
+            orbitalPeriod               = p[2];
+            radius                      = p[3];
+            axialTilt                   = p[4];
+            rotPediod                   = p[5];
+            longtitudeOfAscendingNode   = p[6];
+            mass                        = p[7];
+        }
+
+        public float eccentricity;
+        public float rPericenter;
+        public float orbitalPeriod;
+        public float radius;
+        public float axialTilt;
+        public float rotPediod;
+        public float longtitudeOfAscendingNode;
+        public float mass;
+
+        public float SqrPericenter
+        {
+            get
+            {
+                return rPericenter * rPericenter;
+            }
+        }
+    }
+
+    public float Mass
+    {
+        get
+        {
+            return Scales.massScale * Par.mass;
+        }
+    }
+
+    public Parameter Par { get; set; } 		//eccentricity, r_pericenter, orbital period, radius, axial tilt, rot pediod longtitude of ascending node
 
 	private float[] CosSinOmega = new float[2];
 
 	public float OP { get; private set; }		//orbital period
-	public float RP { get; private set; }		// roation period
+	public float RP { get; private set; }		// rotation period
 
 	public float GetVelMagnitude ()
 	{
@@ -29,18 +72,18 @@ public class PlanetaryOrbit : MonoBehaviour
 
 	void Start ()
 	{
-		OP = Par [2] * Scales.y2tmu;
-		RP = Par [5] * Scales.y2tmu;
+		OP = Par.orbitalPeriod * Scales.y2tmu;
+		RP = Par.rotPediod * Scales.y2tmu;
 
-		surface = Mathf.Sqrt (-(1 + Par [0]) / Mathf.Pow (-1 + Par [0], 3)) * Mathf.PI * Par [1] * Par [1];
-		k = 2 * surface / (Mathf.Pow (1 + Par [0], 2) * OP * Par [1] * Par [1]);
+		surface = Mathf.Sqrt (-(1 + Par.eccentricity) / Mathf.Pow (-1 + Par.eccentricity, 3)) * Mathf.PI * Par.SqrPericenter;
+		k = 2 * surface / (Mathf.Pow (1 + Par.eccentricity, 2) * OP * Par.SqrPericenter);
 		orbitDt = OP / (2 * (N - 1));
 
 		ThetaRunge ();
 		time = Random.Range (0, OP);
 
-		CosSinOmega [0] = Mathf.Cos (Par [6]);
-		CosSinOmega [1] = Mathf.Sin (Par [6]);
+		CosSinOmega [0] = Mathf.Cos (Par.longtitudeOfAscendingNode);
+		CosSinOmega [1] = Mathf.Sin (Par.longtitudeOfAscendingNode);
 	}
 
 	void FixedUpdate ()
@@ -61,8 +104,8 @@ public class PlanetaryOrbit : MonoBehaviour
 		float Cost = Mathf.Cos (th);
 		float Sint = Mathf.Sin (th);
 
-		float x = (Par [1] * (1 + Par [0])) / (1 + Par [0] * Cost) * Cost;
-		float z = (Par [1] * (1 + Par [0])) / (1 + Par [0] * Cost) * Sint;
+		float x = (Par.rPericenter * (1 + Par.eccentricity)) / (1 + Par.eccentricity * Cost) * Cost;
+		float z = (Par.rPericenter * (1 + Par.eccentricity)) / (1 + Par.eccentricity * Cost) * Sint;
 
 		float xp = CosSinOmega [0] * x - CosSinOmega [1] * z;
 		float yp = CosSinOmega [1] * x + CosSinOmega [0] * z;
@@ -72,7 +115,7 @@ public class PlanetaryOrbit : MonoBehaviour
 
 	private float dthdt (float th)
 	{
-		return k * Mathf.Pow ((1 + Par [0] * Mathf.Cos (th)), 2);
+		return k * Mathf.Pow ((1 + Par.eccentricity * Mathf.Cos (th)), 2);
 	}
 
 	private void ThetaRecurrence ()

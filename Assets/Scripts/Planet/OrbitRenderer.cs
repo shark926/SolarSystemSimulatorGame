@@ -22,7 +22,7 @@ public class OrbitRenderer : MonoBehaviour
 
 		line = gameObject.AddComponent <LineRenderer> () as LineRenderer;
 		line.material = Resources.Load ("Materials/Line") as Material;
-		line.SetWidth (2f * PO.Par [3], 2f * PO.Par [3]);
+		line.SetWidth (2f * PO.Par.radius, 2f * PO.Par.radius);
 		line.SetVertexCount (lineRendererLength);
 		
 		if (gameObject.tag == "Moon")
@@ -43,7 +43,7 @@ public class OrbitRenderer : MonoBehaviour
 				line.SetPosition (i, transform.parent.position + PO.ParametricOrbit (2 * Mathf.PI / (lineRendererLength - 1) * i));
 			
 		float scaleLR = Mathf.Abs ((new Vector3 (camPlaneDist, camPlaneDist, camPlaneDist) / thresDist).x);
-		float width = Mathf.Min (65f, 1.5f * PO.Par [3] * scaleLR);
+		float width = Mathf.Min (65f, 1.5f * PO.Par.radius * scaleLR);
 		line.SetWidth (width, width);
 	}
 }
